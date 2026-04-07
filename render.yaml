@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ocr-web-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: WORKERS
+        value: "1"
+      - key: OCR_LANG
+        value: eng
