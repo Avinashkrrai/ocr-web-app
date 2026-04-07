@@ -10,7 +10,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # =============================================================================
-# Stage 2: Build the C++ OCR engine + run the Python backend
+# Stage 2: Build C++ engine + Python backend (production)
 # =============================================================================
 FROM python:3.10-slim AS production
 
@@ -23,9 +23,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pybind11-dev \
     tesseract-ocr \
     tesseract-ocr-eng \
-    nginx \
-    curl \
-    gettext-base \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -37,21 +34,21 @@ RUN cd engine \
     && cmake .. -DPYTHON_EXECUTABLE=$(which python3) \
     && make -j$(nproc)
 
+# Remove build tools to save ~200MB in final image
+RUN apt-get purge -y build-essential cmake pkg-config && apt-get autoremove -y
+
 # Install Python dependencies
 COPY backend/requirements.txt ./backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt gunicorn
 
-# Copy backend code
+# Copy application code
 COPY backend/ ./backend/
-
-# Copy fine-tuning scripts
 COPY finetune/ ./finetune/
 
 # Copy built frontend from stage 1
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 
-# Copy Nginx template and startup script
-COPY nginx.conf.template /app/nginx.conf.template
+# Startup script
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
@@ -60,7 +57,5 @@ RUN mkdir -p /app/backend/data/uploads /app/backend/data/corrections
 
 ENV PYTHONPATH=/app/engine/build
 ENV PYTHONUNBUFFERED=1
-
-EXPOSE ${PORT:-80}
 
 CMD ["/app/start.sh"]
