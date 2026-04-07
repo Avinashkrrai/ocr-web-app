@@ -1,0 +1,16 @@
+services:
+  ocr-app:
+    build: .
+    container_name: ocr-web-app
+    ports:
+      - "80:80"
+    volumes:
+      - ocr-data:/app/backend/data
+    environment:
+      - PORT=80
+      - WORKERS=1
+      - OCR_LANG=eng
+    restart: unless-stopped
+
+volumes:
+  ocr-data:

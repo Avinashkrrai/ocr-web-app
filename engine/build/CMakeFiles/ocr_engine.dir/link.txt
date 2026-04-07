@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -flto -shared  -o ocr_engine.cpython-310-x86_64-linux-gnu.so CMakeFiles/ocr_engine.dir/src/ocr_engine.cpp.o CMakeFiles/ocr_engine.dir/src/preprocessor.cpp.o CMakeFiles/ocr_engine.dir/src/bindings.cpp.o  -ltesseract -larchive -llept 
