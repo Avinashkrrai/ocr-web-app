@@ -10,3 +10,5 @@ services:
         value: "1"
       - key: OCR_LANG
         value: eng
+      - key: GEMINI_API_KEY
+        sync: false

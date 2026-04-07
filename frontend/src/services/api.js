@@ -2,10 +2,15 @@ import axios from "axios";
 
 const api = axios.create({ baseURL: "/api" });
 
-export async function performOCR(file) {
+export async function getEngines() {
+  const { data } = await api.get("/engines");
+  return data;
+}
+
+export async function performOCR(file, engine = "auto") {
   const form = new FormData();
   form.append("file", file);
-  const { data } = await api.post("/ocr", form, {
+  const { data } = await api.post(`/ocr?engine=${engine}`, form, {
     headers: { "Content-Type": "multipart/form-data" },
     timeout: 300_000,
   });

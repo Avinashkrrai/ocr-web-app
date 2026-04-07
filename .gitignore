@@ -1,0 +1,10 @@
+engine/build/
+frontend/node_modules/
+frontend/dist/
+backend/data/uploads/*
+backend/data/corrections/*
+!backend/data/uploads/.gitkeep
+!backend/data/corrections/.gitkeep
+__pycache__/
+*.pyc
+.env

@@ -29,6 +29,7 @@ class OCRResponse(BaseModel):
     preview_url: Optional[str] = None
     is_pdf: bool = False
     original_pdf_url: Optional[str] = None
+    engine: str = "tesseract"
 
 
 class ExportRequest(BaseModel):

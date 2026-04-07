@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-export default function ImageUpload({ onUpload, loading }) {
+export default function ImageUpload({ onUpload, loading, engines, engine, onEngineChange }) {
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef(null);
 
@@ -23,6 +23,26 @@ export default function ImageUpload({ onUpload, loading }) {
 
   return (
     <div className="upload-section">
+      {engines.length > 1 && (
+        <div className="engine-selector">
+          <span className="engine-label">OCR Engine</span>
+          <div className="engine-options">
+            {engines.map((e) => (
+              <button
+                key={e.id}
+                className={`engine-btn ${engine === e.id ? "active" : ""}`}
+                onClick={() => onEngineChange(e.id)}
+              >
+                {e.id === "gemini" && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                )}
+                {e.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div
         className={`drop-zone ${dragActive ? "active" : ""}`}
         onDragEnter={handleDrag}
@@ -41,7 +61,7 @@ export default function ImageUpload({ onUpload, loading }) {
         {loading ? (
           <div className="spinner-container">
             <div className="spinner" />
-            <p>Processing image...</p>
+            <p>Processing with {engine === "gemini" ? "Gemini AI" : "Tesseract"}...</p>
           </div>
         ) : (
           <>

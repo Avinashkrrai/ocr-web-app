@@ -38,10 +38,74 @@ body {
   font-size: 1rem;
 }
 
+/* Engine Selector */
+.engine-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.engine-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.engine-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.engine-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.2rem;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  background: #18181b;
+  color: #a1a1aa;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.engine-btn:hover {
+  border-color: #6366f1;
+  color: #e4e4e7;
+}
+
+.engine-btn.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+/* Engine badge in toolbar */
+.engine-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: #1e1b4b;
+  color: #a78bfa;
+  border: 1px solid #4c1d95;
+  margin-left: 0.75rem;
+}
+
 /* Upload */
 .upload-section {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding: 2rem 0;
 }
 
@@ -129,6 +193,8 @@ body {
 
 /* Toolbar */
 .toolbar {
+  display: flex;
+  align-items: center;
   margin-bottom: 1.5rem;
 }
 
