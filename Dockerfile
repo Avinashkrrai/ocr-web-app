@@ -10,28 +10,34 @@ COPY frontend/ ./
 RUN npm run build
 
 # =============================================================================
-# Stage 2: Build C++ engine + Python backend (single runtime stage)
+# Stage 2: Compile C++ OCR engine (discarded after .so is copied)
 # =============================================================================
-FROM python:3.10-slim
+FROM python:3.10-slim AS engine-build
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    pkg-config \
-    libtesseract-dev \
-    libleptonica-dev \
-    pybind11-dev \
-    tesseract-ocr \
-    tesseract-ocr-eng \
+    build-essential cmake pkg-config \
+    libtesseract-dev libleptonica-dev pybind11-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Build C++ OCR engine
 COPY engine/ ./engine/
 RUN cd engine && mkdir -p build && cd build \
     && cmake .. -DPYTHON_EXECUTABLE=$(which python3) \
     && make -j$(nproc)
+
+# =============================================================================
+# Stage 3: Lean runtime (no build tools)
+# =============================================================================
+FROM python:3.10-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr tesseract-ocr-eng libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy compiled C++ engine from build stage
+COPY --from=engine-build /app/engine/build/ocr_engine*.so /app/engine/build/
 
 # Install Python dependencies
 COPY backend/requirements.txt ./backend/requirements.txt

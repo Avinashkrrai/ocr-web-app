@@ -7,6 +7,7 @@ export async function performOCR(file) {
   form.append("file", file);
   const { data } = await api.post("/ocr", form, {
     headers: { "Content-Type": "multipart/form-data" },
+    timeout: 300_000,
   });
   return data;
 }

@@ -38,7 +38,15 @@ export default function App() {
         setImageUrl(result.preview_url);
       }
     } catch (err) {
-      setError(err.response?.data?.detail || err.message);
+      const detail = err.response?.data?.detail;
+      const code = err.response?.status;
+      if (code === 502 || code === 503) {
+        setError("Server is starting up — please wait 30 seconds and try again.");
+      } else if (err.code === "ECONNABORTED") {
+        setError("OCR is taking too long — try a smaller image or fewer pages.");
+      } else {
+        setError(detail || err.message);
+      }
     } finally {
       setLoading(false);
     }
