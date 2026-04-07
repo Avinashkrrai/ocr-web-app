@@ -1,6 +1,17 @@
 import { useState, useRef } from "react";
 
-export default function ImageUpload({ onUpload, loading, engines, engine, onEngineChange }) {
+export default function ImageUpload({
+  onUpload,
+  loading,
+  engines,
+  engine,
+  onEngineChange,
+  docTypes,
+  docType,
+  onDocTypeChange,
+  enhance,
+  onEnhanceChange,
+}) {
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef(null);
 
@@ -23,6 +34,7 @@ export default function ImageUpload({ onUpload, loading, engines, engine, onEngi
 
   return (
     <div className="upload-section">
+      {/* Engine selector */}
       {engines.length > 1 && (
         <div className="engine-selector">
           <span className="engine-label">OCR Engine</span>
@@ -33,9 +45,6 @@ export default function ImageUpload({ onUpload, loading, engines, engine, onEngi
                 className={`engine-btn ${engine === e.id ? "active" : ""}`}
                 onClick={() => onEngineChange(e.id)}
               >
-                {e.id === "gemini" && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                )}
                 {e.name}
               </button>
             ))}
@@ -43,6 +52,36 @@ export default function ImageUpload({ onUpload, loading, engines, engine, onEngi
         </div>
       )}
 
+      {/* Document type + enhance */}
+      <div className="upload-options">
+        {docTypes && docTypes.length > 0 && (
+          <div className="option-group">
+            <span className="engine-label">Document Type</span>
+            <div className="engine-options">
+              {docTypes.map((dt) => (
+                <button
+                  key={dt.id}
+                  className={`engine-btn ${docType === dt.id ? "active" : ""}`}
+                  onClick={() => onDocTypeChange(dt.id)}
+                >
+                  {dt.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <label className="enhance-toggle">
+          <input
+            type="checkbox"
+            checked={enhance}
+            onChange={(e) => onEnhanceChange(e.target.checked)}
+          />
+          <span>Enhance old/faded document</span>
+        </label>
+      </div>
+
+      {/* Drop zone */}
       <div
         className={`drop-zone ${dragActive ? "active" : ""}`}
         onDragEnter={handleDrag}
@@ -61,7 +100,10 @@ export default function ImageUpload({ onUpload, loading, engines, engine, onEngi
         {loading ? (
           <div className="spinner-container">
             <div className="spinner" />
-            <p>Processing with {engine === "gemini" ? "Gemini AI" : "Tesseract"}...</p>
+            <p>
+              Processing with {engine === "gemini" ? "Gemini AI" : "Tesseract"}
+              {docType === "land_document" ? " (Land Record mode)" : ""}...
+            </p>
           </div>
         ) : (
           <>

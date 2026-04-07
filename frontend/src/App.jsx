@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import ImageUpload from "./components/ImageUpload";
 import OCREditor from "./components/OCREditor";
 import ExportPanel from "./components/ExportPanel";
+import AnalysisPanel from "./components/AnalysisPanel";
 import { performOCR, getEngines } from "./services/api";
 import "./App.css";
 
@@ -16,12 +17,16 @@ export default function App() {
 
   const [engines, setEngines] = useState([]);
   const [engine, setEngine] = useState("auto");
+  const [docTypes, setDocTypes] = useState([]);
+  const [docType, setDocType] = useState("general");
+  const [enhance, setEnhance] = useState(false);
 
   useEffect(() => {
     getEngines()
       .then((data) => {
         setEngines(data.engines || []);
         setEngine(data.default || "auto");
+        setDocTypes(data.doc_types || []);
       })
       .catch(() => {});
   }, []);
@@ -39,7 +44,7 @@ export default function App() {
     }
 
     try {
-      const result = await performOCR(file, engine);
+      const result = await performOCR(file, engine, docType, enhance);
       setOcrResult(result);
       setEditedText(result.full_text);
       setIsPdf(result.is_pdf || false);
@@ -73,6 +78,9 @@ export default function App() {
     setPdfUrl(null);
   }
 
+  const engineLabel = ocrResult?.engine === "gemini" ? "Gemini 2.5 Flash" : "Tesseract";
+  const docLabel = ocrResult?.doc_type === "land_document" ? "Land Record" : "General";
+
   return (
     <div className="app">
       <header className="header">
@@ -97,19 +105,22 @@ export default function App() {
             engines={engines}
             engine={engine}
             onEngineChange={setEngine}
+            docTypes={docTypes}
+            docType={docType}
+            onDocTypeChange={setDocType}
+            enhance={enhance}
+            onEnhanceChange={setEnhance}
           />
         ) : (
           <>
             <div className="toolbar">
               <button className="btn btn-secondary" onClick={handleReset}>
-                &larr; Upload New Image
+                &larr; Upload New
               </button>
-              {ocrResult.engine && (
-                <span className="engine-badge">
-                  {ocrResult.engine === "gemini" ? "Gemini 2.5 Flash" : "Tesseract"}
-                </span>
-              )}
+              <span className="engine-badge">{engineLabel}</span>
+              <span className="engine-badge doc-badge">{docLabel}</span>
             </div>
+
             <OCREditor
               ocrResult={ocrResult}
               imageUrl={imageUrl}
@@ -117,6 +128,11 @@ export default function App() {
               pdfUrl={pdfUrl}
               onTextChange={setEditedText}
             />
+
+            {ocrResult.doc_type === "land_document" && (
+              <AnalysisPanel imageId={ocrResult.image_id} />
+            )}
+
             <ExportPanel text={editedText} ocrResult={ocrResult} />
           </>
         )}

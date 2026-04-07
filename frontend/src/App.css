@@ -425,3 +425,240 @@ body {
 .btn-corrections.submitted {
   background: #22c55e;
 }
+
+/* Upload options row */
+.upload-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.enhance-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  cursor: pointer;
+  padding: 0.55rem 1rem;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  background: #18181b;
+  transition: all 0.15s;
+  margin-top: 1.2rem;
+}
+
+.enhance-toggle:hover {
+  border-color: #6366f1;
+  color: #e4e4e7;
+}
+
+.enhance-toggle input[type="checkbox"] {
+  accent-color: #6366f1;
+  width: 16px;
+  height: 16px;
+}
+
+/* Doc type badge */
+.doc-badge {
+  background: #1a2e1a;
+  color: #86efac;
+  border-color: #166534;
+}
+
+/* Analyze button */
+.btn-analyze {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #18181b;
+  font-weight: 600;
+}
+.btn-analyze:hover:not(:disabled) { opacity: 0.9; }
+
+.btn-sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+/* Analysis trigger */
+.analysis-trigger {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.analysis-hint {
+  font-size: 0.82rem;
+  color: #71717a;
+}
+
+.analysis-error {
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+
+/* Analysis panel */
+.analysis-panel {
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.analysis-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e4e4e7;
+}
+
+.confidence-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.confidence-badge.high {
+  background: #052e16;
+  color: #4ade80;
+  border: 1px solid #166534;
+}
+
+.confidence-badge.mid {
+  background: #422006;
+  color: #fbbf24;
+  border: 1px solid #854d0e;
+}
+
+.confidence-badge.low {
+  background: #450a0a;
+  color: #f87171;
+  border: 1px solid #991b1b;
+}
+
+.analysis-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.meta-chip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  background: #27272a;
+  color: #a1a1aa;
+}
+
+.analysis-summary {
+  color: #d4d4d8;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: #09090b;
+  border-radius: 8px;
+  border-left: 3px solid #6366f1;
+}
+
+.analysis-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.field-row {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #1f1f23;
+}
+
+.field-label {
+  min-width: 160px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #71717a;
+  flex-shrink: 0;
+}
+
+.field-value {
+  font-size: 0.9rem;
+  color: #e4e4e7;
+}
+
+.boundary-table {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #1f1f23;
+}
+
+.boundary-table table {
+  margin-top: 0.4rem;
+  margin-left: 160px;
+  border-collapse: collapse;
+}
+
+.boundary-table td {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  color: #d4d4d8;
+}
+
+.boundary-table .dir-label {
+  font-weight: 600;
+  color: #a1a1aa;
+  text-transform: capitalize;
+}
+
+.uncertain-sections {
+  margin-bottom: 1rem;
+}
+
+.uncertain-sections h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fbbf24;
+  margin-bottom: 0.5rem;
+}
+
+.uncertain-sections ul {
+  list-style: none;
+  padding: 0;
+}
+
+.uncertain-sections li {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  padding: 0.3rem 0.6rem;
+  background: #1c1917;
+  border-radius: 6px;
+  margin-bottom: 0.3rem;
+  border-left: 2px solid #fbbf24;
+}
+
+@media (max-width: 600px) {
+  .field-row { flex-direction: column; gap: 0.2rem; }
+  .field-label { min-width: unset; }
+  .boundary-table table { margin-left: 0; }
+}

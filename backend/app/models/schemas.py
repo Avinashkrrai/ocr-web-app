@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Any, Optional
 
 
 class BBox(BaseModel):
@@ -30,6 +30,22 @@ class OCRResponse(BaseModel):
     is_pdf: bool = False
     original_pdf_url: Optional[str] = None
     engine: str = "tesseract"
+    doc_type: str = "general"
+
+
+class AnalyzeRequest(BaseModel):
+    image_id: str
+
+
+class AnalyzeResponse(BaseModel):
+    image_id: str
+    document_type: str = "Unknown"
+    summary: str = ""
+    language: str = "Unknown"
+    estimated_date: Optional[str] = None
+    fields: dict[str, Any] = {}
+    confidence: float = 0.0
+    uncertain_sections: list[str] = []
 
 
 class ExportRequest(BaseModel):
