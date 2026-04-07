@@ -10,9 +10,9 @@ COPY frontend/ ./
 RUN npm run build
 
 # =============================================================================
-# Stage 2: Build C++ engine + Python backend (production)
+# Stage 2: Build C++ engine + Python backend (single runtime stage)
 # =============================================================================
-FROM python:3.10-slim AS production
+FROM python:3.10-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -29,13 +29,9 @@ WORKDIR /app
 
 # Build C++ OCR engine
 COPY engine/ ./engine/
-RUN cd engine \
-    && mkdir -p build && cd build \
+RUN cd engine && mkdir -p build && cd build \
     && cmake .. -DPYTHON_EXECUTABLE=$(which python3) \
     && make -j$(nproc)
-
-# Remove build tools to save ~200MB in final image
-RUN apt-get purge -y build-essential cmake pkg-config && apt-get autoremove -y
 
 # Install Python dependencies
 COPY backend/requirements.txt ./backend/requirements.txt
@@ -45,14 +41,13 @@ RUN pip install --no-cache-dir -r backend/requirements.txt gunicorn
 COPY backend/ ./backend/
 COPY finetune/ ./finetune/
 
-# Copy built frontend from stage 1
+# Copy built frontend
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 
 # Startup script
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
-# Create data directories
 RUN mkdir -p /app/backend/data/uploads /app/backend/data/corrections
 
 ENV PYTHONPATH=/app/engine/build
