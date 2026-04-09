@@ -3,6 +3,7 @@ import ImageUpload from "./components/ImageUpload";
 import OCREditor from "./components/OCREditor";
 import ExportPanel from "./components/ExportPanel";
 import AnalysisPanel from "./components/AnalysisPanel";
+import DocumentChat from "./components/DocumentChat";
 import { performOCR, getEngines } from "./services/api";
 import "./App.css";
 
@@ -131,6 +132,10 @@ export default function App() {
 
             {ocrResult.doc_type === "land_document" && (
               <AnalysisPanel imageId={ocrResult.image_id} />
+            )}
+
+            {ocrResult.engine === "gemini" && (
+              <DocumentChat imageId={ocrResult.image_id} />
             )}
 
             <ExportPanel text={editedText} ocrResult={ocrResult} />

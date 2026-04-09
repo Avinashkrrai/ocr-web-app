@@ -48,6 +48,17 @@ class AnalyzeResponse(BaseModel):
     uncertain_sections: list[str] = []
 
 
+class AskRequest(BaseModel):
+    image_id: str
+    question: str
+
+
+class AskResponse(BaseModel):
+    image_id: str
+    question: str
+    answer: str
+
+
 class ExportRequest(BaseModel):
     text: str
     format: str  # "pdf", "docx", "txt"

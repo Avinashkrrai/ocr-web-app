@@ -27,6 +27,15 @@ export async function analyzeDocument(imageId) {
   return data;
 }
 
+export async function askDocument(imageId, question) {
+  const { data } = await api.post(
+    "/ask",
+    { image_id: imageId, question },
+    { timeout: 120_000 },
+  );
+  return data;
+}
+
 export async function exportDocument(text, format, filename = "document") {
   const { data } = await api.post(
     "/export",

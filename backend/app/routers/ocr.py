@@ -9,9 +9,9 @@ from fastapi import APIRouter, UploadFile, File, Query, HTTPException
 import fitz  # PyMuPDF
 
 from ..services.ocr_service import run_ocr
-from ..services.gemini_service import run_gemini_ocr, run_gemini_analysis
+from ..services.gemini_service import run_gemini_ocr, run_gemini_analysis, ask_about_document
 from ..services.enhance_service import enhance_document
-from ..models.schemas import OCRResponse, AnalyzeRequest, AnalyzeResponse
+from ..models.schemas import OCRResponse, AnalyzeRequest, AnalyzeResponse, AskRequest, AskResponse
 
 logger = logging.getLogger(__name__)
 
@@ -166,6 +166,31 @@ async def analyze_document(req: AnalyzeRequest):
         confidence=result.get("confidence", 0.0),
         uncertain_sections=result.get("uncertain_sections", []),
     )
+
+
+@router.post("/ask", response_model=AskResponse)
+async def ask_document(req: AskRequest):
+    """Ask a free-form question about an uploaded document."""
+    if not os.environ.get("GEMINI_API_KEY"):
+        raise HTTPException(400, "Document Q&A requires Gemini — set GEMINI_API_KEY")
+    if not req.question.strip():
+        raise HTTPException(400, "Question cannot be empty")
+
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    candidates = list(UPLOADS_DIR.glob(f"{req.image_id}.*"))
+    if not candidates:
+        raise HTTPException(404, f"Upload {req.image_id} not found")
+
+    file_path = candidates[0]
+
+    try:
+        logger.info("Q&A: %s — %s", file_path.name, req.question[:80])
+        answer = await asyncio.to_thread(ask_about_document, str(file_path), req.question)
+    except Exception as e:
+        logger.exception("Q&A failed")
+        raise HTTPException(500, f"Failed to answer question: {e}")
+
+    return AskResponse(image_id=req.image_id, question=req.question, answer=answer)
 
 
 # ── Engine helpers ──────────────────────────────────────────────────

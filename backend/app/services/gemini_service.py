@@ -139,6 +139,23 @@ def run_gemini_ocr(file_path: str, doc_type: str = "general") -> dict:
     }
 
 
+def ask_about_document(file_path: str, question: str) -> str:
+    """Answer a free-form question about a document using Gemini vision."""
+    prompt = (
+        "You are a helpful document assistant. "
+        "The user has uploaded a document (image or PDF). "
+        "Answer the following question about it accurately and concisely.\n\n"
+        f"Question: {question}\n\n"
+        "Rules:\n"
+        "- Base your answer ONLY on what is visible in the document\n"
+        "- If the answer is not in the document, say so clearly\n"
+        "- For old or degraded text, use context clues to infer unclear parts\n"
+        "- Be specific — include exact names, numbers, dates from the document\n"
+        "- Keep the answer concise but complete"
+    )
+    return _call_gemini(Path(file_path), prompt)
+
+
 def run_gemini_analysis(file_path: str) -> dict:
     """Extract structured fields from a land/property document."""
     raw = _call_gemini(Path(file_path), ANALYZE_PROMPT)
